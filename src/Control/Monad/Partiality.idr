@@ -6,9 +6,13 @@ public
 codata Partiality x = Now x
                     | Later (Partiality x)
 
+public
+mapPartiality : (a -> b) -> Partiality a -> Partiality b
+mapPartiality f (Now x) = Now (f x)
+mapPartiality f (Later p) = Later (mapPartiality f p)
+
 instance Functor Partiality where
-  map f (Now x) = Now (f x)
-  map f (Later p) = Later (map f p)
+  map = mapPartiality
 
 instance Applicative Partiality where
   pure a = Now a

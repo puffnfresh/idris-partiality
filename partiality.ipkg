@@ -3,3 +3,4 @@ package partiality
 sourcedir = src
 
 modules = Control.Monad.Partiality
+        , Control.Monad.Partiality.Equality
