@@ -4,7 +4,7 @@ import Control.Monad.Partiality
 
 %default total
 
-infix 5 =~=
+infix 1 =~=
 
 data (=~=) : Partiality a -> Partiality b -> Type where
   Now' : x = y -> Now x =~= Now y
@@ -35,3 +35,12 @@ functorComposition : (p : Partiality a)
                   -> map (f . g) p =~= (map f . map g) p
 functorComposition (Now x) g f = Now' Refl
 functorComposition (Later (Delay x)) g f = Later' (functorComposition x g f)
+
+applicativeMap : (p : Partiality a)
+              -> (f : a -> b)
+              -> map f p = pure f <*> p
+applicativeMap (Now x) f = Refl
+applicativeMap (Later p) f = Refl
+
+applicativeIdentity : (p : Partiality a) -> pure id <*> p =~= p
+applicativeIdentity = functorIdentity
