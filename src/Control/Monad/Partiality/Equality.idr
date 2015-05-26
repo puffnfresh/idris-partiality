@@ -13,13 +13,13 @@ data (=~=) : Partiality a -> Partiality b -> Type where
 neverNever : never =~= never
 neverNever = Later' neverNever
 
-functorIdentity : (p : Partiality a) -> mapPartiality id p =~= p
+functorIdentity : (p : Partiality a) -> map id p =~= p
 functorIdentity (Now x) = Now' Refl
 functorIdentity (Later (Delay x)) = Later' (functorIdentity x)
 
 functorComposition : (p : Partiality a)
                   -> (g : a -> b)
                   -> (f : b -> c)
-                  -> mapPartiality (f . g) p =~= (mapPartiality f . mapPartiality g) p
+                  -> map (f . g) p =~= (map f . map g) p
 functorComposition (Now x) g f = Now' Refl
 functorComposition (Later (Delay x)) g f = Later' (functorComposition x g f)
