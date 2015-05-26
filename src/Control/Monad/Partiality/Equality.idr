@@ -2,11 +2,13 @@ module Control.Monad.Partiality.Equality
 
 import Control.Monad.Partiality
 
+%default total
+
 infix 5 =~=
 
 data (=~=) : Partiality a -> Partiality b -> Type where
   Now' : x = y -> Now x =~= Now y
-  Later' : x =~= y -> Later x =~= Later y
+  Later' : Inf (x =~= y) -> Later x =~= Later y
 
 neverNever : never =~= never
 neverNever = Later' neverNever
