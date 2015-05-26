@@ -17,7 +17,7 @@ instance Functor Partiality where
 instance Applicative Partiality where
   pure a = Now a
   (<*>) (Now f) fb = map f fb
-  (<*>) fa fb = Later (fa <*> fb)
+  (<*>) (Later fa) fb = Later (fa <*> fb)
 
 instance Monad Partiality where
   (>>=) (Now x) f = f x
