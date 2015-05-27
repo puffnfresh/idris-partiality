@@ -74,3 +74,10 @@ monadRightIdentity : (mx : Partiality a)
                   -> mx >>= return =~= mx
 monadRightIdentity (Now a) = Now' Refl
 monadRightIdentity (Later (Delay a)) = Later' (monadRightIdentity a)
+
+monadAssociativity : (mx : Partiality a)
+                  -> (f : a -> Partiality b)
+                  -> (g : b -> Partiality c)
+                  -> mx >>= f >>= g =~= mx >>= (\x => f x >>= g)
+monadAssociativity (Now a) f g = refl
+monadAssociativity (Later (Delay a)) f g = Later' (monadAssociativity a f g)
