@@ -25,6 +25,9 @@ trans (Later' ab) (Later' bc) = Later' (trans ab bc)
 neverNever : never =~= never
 neverNever = Later' neverNever
 
+nowNeverAbsurd : Now a =~= never -> Void
+nowNeverAbsurd (Now' _) impossible
+
 functorIdentity : (p : Partiality a) -> map id p =~= p
 functorIdentity (Now x) = Now' Refl
 functorIdentity (Later (Delay x)) = Later' (functorIdentity x)

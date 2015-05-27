@@ -16,6 +16,7 @@ apPartiality : Partiality (a -> b) -> Partiality a -> Partiality b
 apPartiality (Now f) a = mapPartiality f a
 apPartiality (Later f) a = Later (f `apPartiality` a)
 
+private
 bindPartiality : Partiality a -> (a -> Partiality b) -> Partiality b
 bindPartiality (Now x) f = f x
 bindPartiality (Later fa) f = Later (fa `bindPartiality` f)
