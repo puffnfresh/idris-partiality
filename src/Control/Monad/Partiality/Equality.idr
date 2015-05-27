@@ -45,6 +45,16 @@ applicativeMap (Later p) f = Refl
 applicativeIdentity : (p : Partiality a) -> pure id <*> p =~= p
 applicativeIdentity = functorIdentity
 
+applicativeComposition : (p : Partiality a)
+                      -> (g : Partiality (a -> b))
+                      -> (f : Partiality (b -> c))
+                      -> pure (.) <*> f <*> g <*> p =~= f <*> (g <*> p)
+applicativeComposition p (Now g) (Now f) = functorComposition p g f
+applicativeComposition p (Later (Delay g)) (Now f) =
+  Later' (applicativeComposition p g (Now f))
+applicativeComposition p g (Later (Delay f)) =
+  Later' (applicativeComposition p g f)
+
 applicativeHomomorphism : (x : a)
                        -> (f : a -> b)
                        -> Now f <*> Now x = Now (f x)
@@ -61,7 +71,8 @@ monadApplicative : (mf : Partiality (a -> b))
                 -> (mx : Partiality a)
                 -> mf <*> mx =~= mf >>= (\f => mx >>= (\x => pure (f x)))
 monadApplicative (Now f) (Now a) = Now' Refl
-monadApplicative (Now f) (Later (Delay a)) = Later' (monadApplicative (Now f) a)
+monadApplicative (Now f) (Later (Delay a)) =
+  Later' (monadApplicative (Now f) a)
 monadApplicative (Later (Delay f)) mx =
   Later' (monadApplicative f mx)
 
