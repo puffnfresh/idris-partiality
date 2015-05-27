@@ -56,3 +56,11 @@ applicativeInterchange : (x : a)
 applicativeInterchange x (Now f) = Now' Refl
 applicativeInterchange x (Later (Delay f)) =
   Later' (applicativeInterchange x f)
+
+monadApplicative : (mf : Partiality (a -> b))
+                -> (mx : Partiality a)
+                -> mf <*> mx =~= mf >>= (\f => mx >>= (\x => pure (f x)))
+monadApplicative (Now f) (Now a) = Now' Refl
+monadApplicative (Now f) (Later (Delay a)) = Later' (monadApplicative (Now f) a)
+monadApplicative (Later (Delay f)) mx =
+  Later' (monadApplicative f mx)

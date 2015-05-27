@@ -16,6 +16,10 @@ apPartiality : Partiality (a -> b) -> Partiality a -> Partiality b
 apPartiality (Now f) a = mapPartiality f a
 apPartiality (Later f) a = Later (f `apPartiality` a)
 
+bindPartiality : Partiality a -> (a -> Partiality b) -> Partiality b
+bindPartiality (Now x) f = f x
+bindPartiality (Later fa) f = Later (fa `bindPartiality` f)
+
 instance Functor Partiality where
   map = mapPartiality
 
@@ -24,8 +28,7 @@ instance Applicative Partiality where
   (<*>) = apPartiality
 
 instance Monad Partiality where
-  (>>=) (Now x) f = f x
-  (>>=) (Later fa) f = Later (fa >>= f)
+  (>>=) = bindPartiality
 
 public
 runForSteps : Nat -> Partiality a -> Partiality a
