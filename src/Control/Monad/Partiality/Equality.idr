@@ -64,3 +64,13 @@ monadApplicative (Now f) (Now a) = Now' Refl
 monadApplicative (Now f) (Later (Delay a)) = Later' (monadApplicative (Now f) a)
 monadApplicative (Later (Delay f)) mx =
   Later' (monadApplicative f mx)
+
+monadLeftIdentity : (x : a)
+                 -> (f : a -> Partiality b)
+                 -> return x >>= f = f x
+monadLeftIdentity x f = Refl
+
+monadRightIdentity : (mx : Partiality a)
+                  -> mx >>= return =~= mx
+monadRightIdentity (Now a) = Now' Refl
+monadRightIdentity (Later (Delay a)) = Later' (monadRightIdentity a)
