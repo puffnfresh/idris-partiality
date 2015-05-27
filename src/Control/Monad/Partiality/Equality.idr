@@ -44,3 +44,15 @@ applicativeMap (Later p) f = Refl
 
 applicativeIdentity : (p : Partiality a) -> pure id <*> p =~= p
 applicativeIdentity = functorIdentity
+
+applicativeHomomorphism : (x : a)
+                       -> (f : a -> b)
+                       -> Now f <*> Now x = Now (f x)
+applicativeHomomorphism x f = Refl
+
+applicativeInterchange : (x : a)
+                      -> (f : Partiality (a -> b))
+                      -> f <*> pure x =~= pure (\g => g x) <*> f
+applicativeInterchange x (Now f) = Now' Refl
+applicativeInterchange x (Later (Delay f)) =
+  Later' (applicativeInterchange x f)
